@@ -87,11 +87,46 @@ SELECT TOP 1 T1.ProductID,T3.ProductName,T3.UnitPrice,SUM(T1.Quantity) AS Quanti
 FROM [dbo].[Order Details] AS T1
 	JOIN [dbo].[Orders] AS T2 ON T1.OrderID = T2.OrderID
 	JOIN [dbo].[Products] AS T3 ON T3.ProductID = T1.ProductID
-	WHERE MONTH(T2.OrderDate) = 11
+	WHERE MONTH(T2.OrderDate) = 10
 GROUP BY T1.ProductID,T3.ProductName,T3.UnitPrice
 ORDER BY SUM(T1.Quantity) DESC;
+--select sum() group by sanpham having sanluong in
+--select max(sum(spluong)) from where group by id
 
+SELECT T1.ProductID,T3.ProductName,T3.UnitPrice,(SUM(Quantity)) as max_num
+FROM [dbo].[Order Details] AS T1
+	JOIN [dbo].[Orders] AS T2 ON T2.OrderID = T1.OrderID
+	JOIN [dbo].[Products] AS T3 ON T1.ProductID = T3.ProductID
+WHERE MONTH(T2.OrderDate)=9
+GROUP BY T1.ProductID,T3.ProductName,T3.UnitPrice
+having (SUM(Quantity)) in (
+SELECT MAX(max_num) from(
+SELECT ProductID,(SUM(Quantity)) as max_num
+FROM [dbo].[Order Details] AS T1
+	JOIN [dbo].[Orders] AS T2 ON T2.OrderID = T1.OrderID
+	WHERE MONTH(T2.OrderDate)=9
+GROUP BY ProductID) a)
 
+CREATE FUNCTION MonthHigest(@month int)
+RETURNS TABLE
+AS
+RETURN(
+SELECT T1.ProductID,T3.ProductName,T3.UnitPrice,(SUM(Quantity)) as max_num
+FROM [dbo].[Order Details] AS T1
+	JOIN [dbo].[Orders] AS T2 ON T2.OrderID = T1.OrderID
+	JOIN [dbo].[Products] AS T3 ON T1.ProductID = T3.ProductID
+WHERE MONTH(T2.OrderDate)=@month
+GROUP BY T1.ProductID,T3.ProductName,T3.UnitPrice
+having (SUM(Quantity)) in (
+SELECT MAX(max_num) from(
+SELECT ProductID,(SUM(Quantity)) as max_num
+FROM [dbo].[Order Details] AS T1
+	JOIN [dbo].[Orders] AS T2 ON T2.OrderID = T1.OrderID
+	WHERE MONTH(T2.OrderDate)=@month
+GROUP BY ProductID) a)
+)
+
+SELECT * FROM [dbo].MonthHigest(10)
 --
 DROP FUNCTION TotalAmount
 --
