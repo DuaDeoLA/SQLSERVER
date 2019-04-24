@@ -80,3 +80,29 @@ RETURN(
 )
 --TEST
 SELECT * FROM [dbo].SalemanCal(1)
+
+--Write a function to display infomation of product having the highest selling quantity in the specific month. 
+
+SELECT TOP 1 T1.ProductID,T3.ProductName,T3.UnitPrice,SUM(T1.Quantity) AS Quantity
+FROM [dbo].[Order Details] AS T1
+	JOIN [dbo].[Orders] AS T2 ON T1.OrderID = T2.OrderID
+	JOIN [dbo].[Products] AS T3 ON T3.ProductID = T1.ProductID
+	WHERE MONTH(T2.OrderDate) = 11
+GROUP BY T1.ProductID,T3.ProductName,T3.UnitPrice
+ORDER BY SUM(T1.Quantity) DESC;
+
+
+--
+DROP FUNCTION TotalAmount
+--
+SELECT [OrderID],[CustomerID],[OrderDate],[RequiredDate],ROW_NUMBER() OVER(ORDER BY [OrderID] ASC) AS ORDERNUM
+FROM [dbo].[Orders]
+--
+
+SELECT T1.CategoryID,T1.ProductName,T3.CategoryName,SUM(T2.Quantity) AS 'Amount',
+		RANK() OVER   
+		(PARTITION BY T1.CategoryID ORDER BY SUM(T2.Quantity) DESC) AS Rank  
+FROM [dbo].[Products] as T1
+	JOIN [dbo].[Order Details] as T2 ON T1.ProductID = T2.ProductID
+	JOIN [dbo].[Categories] as T3 ON T3.CategoryID = T1.CategoryID
+GROUP BY T1.ProductID,T3.CategoryName,T1.CategoryID,T1.ProductName
