@@ -1,20 +1,21 @@
-﻿use QLHangKhong
-go
+﻿USE [QLHangKhong]
+GO
 --	1.	Cho biết các chuyến bay đi ðà Lạt (DAD).
-select * from ChuyenBay where GaDen = 'DAD'
+SELECT * FROM [ChuyenBay] WHERE [GaDen] = 'DAD'
 
 --	2.	Cho biết các loại máy bay có tầm bay lớn hơn 10,000km.
-select * from MayBay where TamBay > 10000
+SELECT * FROM [MayBay] WHERE [TamBay] > 10000
 
 --	3.	Tìm các nhân viên có lương nhỏ hơn 10,000.
-select * from NhanVien where Luong < 10000
+SELECT * FROM [NhanVien] WHERE [Luong] < 10000
 
 --	4.	Cho biết các chuyến bay có độ dài đường bay nhỏ hơn 10.000km và lớn hơn 8.000km.
-select * from ChuyenBay where 8000 < DoDai and DoDai < 10000
+SELECT * FROM [ChuyenBay] WHERE 8000 < [DoDai] AND [DoDai] < 10000
 
 --	5.	Cho biết các chuyến bay xuất phát từ Sài Gòn (SGN) đi Ban Mê Thuộc (BMV).
-select * from ChuyenBay where GaDi = 'SGN' and GaDen = 'BMV'
+SELECT * FROM [ChuyenBay] WHERE [GaDi] = 'SGN' AND [GaDen] = 'BMV'
 
+/*
 6.	Có bao nhiêu chuyến bay xuất phát từ Sài Gòn (SGN).
 7.	Có bao nhiêu loại máy báy Boeing.
 8.	Cho biết tổng số lương phải trả cho các nhân viên.
@@ -27,3 +28,4 @@ select * from ChuyenBay where GaDi = 'SGN' and GaDen = 'BMV'
 15.	Cho biết tên của các phi công lái máy bay Boeing.
 16.	Với mỗi loại máy bay có phi công lái cho biết mã số, loại máy báy và tổng số phi công có thể lái loại máy bay đó.
 17.	Giả sử một hành khách muốn đi thẳng từ ga A đến ga B rồi quay trở về ga A. Cho biết các đường bay nào có thể đáp ứng yêu cầu này.
+*/
