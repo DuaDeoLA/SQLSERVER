@@ -1,8 +1,7 @@
-﻿/*
-	use master
-	drop  database QLHangKhong
-	go
-*/
+﻿USE [master]
+DROP DATABASE [QLHangKhong]
+GO
+
 
 USE [master]
 CREATE DATABASE [QLHangKhong]
@@ -51,9 +50,9 @@ GO
 	có thể thực hiện chuyến bay đó.
 */
 CREATE TABLE [ChungNhan] (
-    [MaCN] INT     IDENTITY PRIMARY KEY,
     [MaNV] CHAR(9) NOT NULL REFERENCES [NhanVien] ([MaNV]),
-    [MaMB] INT     NOT NULL REFERENCES [MayBay] ([MaMB]))
+    [MaMB] INT     NOT NULL REFERENCES [MayBay] ([MaMB]),
+    PRIMARY KEY ([MaNV], [MaMB]))
 GO
 ----------------------------------
 INSERT [ChuyenBay] VALUES ('VN216', 'SGN', 'DIN', 4170, CAST('10:30:00' AS TIME), CAST('14:20:00' AS TIME), 262)
