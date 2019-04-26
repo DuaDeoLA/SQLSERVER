@@ -100,6 +100,7 @@ FROM [dbo].[Order Details] AS T1
 WHERE MONTH(T2.OrderDate)=9
 GROUP BY T1.ProductID,T3.ProductName,T3.UnitPrice
 having (SUM(Quantity)) in (
+
 SELECT MAX(max_num) from(
 SELECT ProductID,(SUM(Quantity)) as max_num
 FROM [dbo].[Order Details] AS T1
