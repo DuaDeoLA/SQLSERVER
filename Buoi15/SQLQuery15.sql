@@ -187,3 +187,29 @@ AS
 SELECT DISTINCT MaCB
 FROM CHUYENBAY,BOEING
 WHERE DoDai < TamBay
+--30.	Cho biết mã số của các máy bay có thể được sử dụng để thực hiện chuyến bay từ Sài Gòn (SGN) đến Huế (HUI).
+
+SELECT MaMB,Hieu
+FROM MAYBAY
+WHERE TamBay > (
+SELECT DoDai
+FROM CHUYENBAY
+WHERE GaDi='SGN' AND GaDen='HUI')
+GO
+--31.	Tìm các chuyến bay có thể được lái bởi các phi công có lương lớn hơn 100,000.
+--32.	Cho biết tên các phi công có lương nhỏ hơn chi phí thấp nhất của đường bay từ Sài Gòn (SGN) đến Buôn Mê Thuộc (BMV).
+SELECT DISTINCT T2.MaNV
+FROM NHANVIEN T1 
+	JOIN CHUNGNHAN T2 ON T1.MaNV=T2.MaNV
+WHERE Luong <
+(SELECT MIN(ChiPhi)
+FROM CHUYENBAY
+WHERE GaDi='SGN' AND GaDen='BMV')
+--33.	Cho biết mã số của các Phi công có lương cao nhất.
+
+--34.	Cho biết mã số của các nhân viên có lương cao thứ nhì.
+--35.	Cho biết mã số của các nhân viên có lương cao thứ nhất hoặc thứ nhì.
+--36.	Cho biết tên và lương của các nhân viên không phải là phi công và có lương lớn hơn lương trung bình của tất cả các phi công.
+--37.	Cho biết tên các phi công có thể lái các máy bay có tầm bay lớn hơn 4,800km nhưng không có chứng nhận lái máy bay Boeing.
+--38.	Cho biết tên các phi công lái ít nhất 3 loại máy bay có tầm bay xa hơn 3200km.
+
