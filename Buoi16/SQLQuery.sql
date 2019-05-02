@@ -45,3 +45,16 @@ FROM PHONGBAN T1
 	JOIN NHANVIEN T3 ON T1.TrPhong = T3.MaNV
 WHERE Diadiem like 'Go Vap' 
 --4.	Với mỗi nhân viên, cho biết họ, tên của nhân viên và họ, tên của người giám sát nhân viên đó.
+SELECT T1.MaNV,T1.Ten,T1.MaGSat,T2.Ten
+FROM NHANVIEN T1
+	JOIN NHANVIEN T2 ON T1.MaGSat =T2.MaNV
+--5.	Cho biết thông tin của tất cả các nhân viên.
+SELECT *
+FROM NHANVIEN
+--6.	Cho biết các mức lương riêng biệt của các nhân viên.
+SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen,Luong
+FROM NHANVIEN
+--7.	Liệt kê tất cả các nhân viên có địa chỉ thuộc quận “Phu Nhuan”.
+SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen
+FROM NHANVIEN
+WHERE Diachi LIKE '%Phu Nhuan%'
