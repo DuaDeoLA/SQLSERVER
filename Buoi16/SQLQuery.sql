@@ -79,3 +79,87 @@ HAVING COUNT(T1.MaDA)=(SELECT COUNT(*)
 FROM DUAN
 WHERE PhQuanly=5) 
 --15.	Cho biết họ tên các nhân viên không có thân nhân.
+SELECT MaNV
+FROM NHANVIEN
+EXCEPT
+SELECT MaNV
+FROM THANNHAN
+--16.	Cho biết họ tên các trưởng phòng có ít nhất một thân nhân.
+SELECT DISTINCT CONCAT(T2.Ho,' ',T2.Dem,' ',T2.Ten) as HoTen
+FROM PHONGBAN T1
+	JOIN NHANVIEN T2 ON T1.TrPhong=T2.MaNV
+	JOIN THANNHAN T3 ON T1.TrPhong=T3.MaNV
+--17.	Cho biết mã số các nhân viên tham gia vào dự án số 1, số 2 hoặc số 3.
+SELECT DISTINCT MaNV
+FROM THAMGIA T1 
+	JOIN DUAN T2 ON T1.MaDA = T2.MaDA
+WHERE T1.MaDA IN (1,2,3)
+--18 Tính tổng lương của tất cả các nhân viên, mức lương cao nhất, mức lương thấp nhất và mức lương trung bình.
+SELECT SUM(Luong) as 'Tong luong',Max(Luong) as 'Luong cao nhan',Min(Luong) as 'Luong thap nhat',Avg(Luong) as 'Luong trung binh'
+FROM NHANVIEN
+--19.Tính tổng lương của các nhân viên phòng “Nghien cuu”, mức lương cao nhất, mức lương thấp nhất và mức lương trung bình của phòng này.
+SELECT SUM(Luong) as 'Tong luong',Max(Luong) as 'Luong cao nhan',Min(Luong) as 'Luong thap nhat',Avg(Luong) as 'Luong trung binh'
+FROM NHANVIEN AS T1
+	JOIN PHONGBAN AS T2 ON T1.MaPhong = T2.MaPB
+WHERE T2.TenPB='Nghien cuu'
+--20.	Cho biết tổng số nhân viên của phòng “Nghien cuu”.
+SELECT MaPhong,COUNT(MaNV) AS 'So nhan vien'
+FROM NHANVIEN
+GROUP BY MaPhong
+--21.	Có bao nhiêu mức lương riêng biệt trong cơ sở dữ liệu.
+SELECT Luong
+FROM NHANVIEN
+GROUP BY Luong
+ORDER BY Luong DESC
+--22.Với mỗi phòng, cho biết mã số phòng, tổng số nhân viên và mức lương trung bình của phòng.
+SELECT MaPhong,COUNT(MaNV) as 'Tong so NV',AVG(Luong) as 'Luong'
+FROM NHANVIEN
+GROUP BY MaPhong
+--23.	Với mỗi dự án, cho biết mã số dự án, tên dự án và tổng số nhân viên tham gia dự án đó.
+
+SELECT T1.MaDA,TenDA,Count(T2.MaNV) AS 'TONG SO NHAN VIEN'
+FROM DUAN AS T1
+	JOIN THAMGIA AS T2 ON T1.MaDA = T2.MaDA
+GROUP BY T1.MaDA,TenDA
+
+--24.	Với mỗi dự án có nhiều hơn hai nhân viên tham gia, cho biết mã số, tên và tổng số nhân viên của dự án đó.
+SELECT T1.MaDA,TenDA,Count(T2.MaNV) AS 'TONG SO NHAN VIEN'
+FROM DUAN AS T1
+	JOIN THAMGIA AS T2 ON T1.MaDA = T2.MaDA
+GROUP BY T1.MaDA,TenDA
+HAVING Count(T2.MaNV)>2
+--25.	Với mỗi dự án, cho biết mã số dự án, tên dự án và tổng số nhân viên của phòng số 5 tham gia vào dự án đó.
+
+SELECT T2.MaDA,T2.TenDA,COUNT(T1.MaNV)
+FROM THAMGIA AS T1
+	JOIN DUAN AS T2 ON T1.MaDA=T2.MaDA
+	JOIN NHANVIEN T3 ON T1.MaNV =T3.MaNV
+WHERE T3.MaPhong=5
+GROUP BY T2.MaDA,T2.TenDA
+--26.	Với mỗi phòng có nhiều hơn năm nhân viên, cho biết mã số phòng và tổng số nhân viên có mức lương cao hơn 40.000 của phòng đó.
+GO
+WITH   DS_PHONG
+AS
+( SELECT MaPB,COUNT(MaNV) AS 'SOLUONG'
+FROM PHONGBAN AS T1
+	JOIN NHANVIEN AS T2 ON T1.MaPB=T2.MaPhong
+GROUP BY MaPB
+HAVING COUNT(MaNV)>3)
+SELECT MaPB,COUNT(*)
+FROM DS_PHONG  AS T1
+	JOIN NHANVIEN AS T2 ON T1.MaPB=T2.MaPhong
+WHERE T2.Luong>20000
+GROUP BY MaPB
+--27.	Với mỗi phòng có mức lương trung bình lớn hơn 30.000, cho biết tên phòng và tổng số nhân viên của phòng đó.
+SELECT MaPhong,COUNT(MaNV) as 'Tong so nhan vien'
+FROM NHANVIEN AS T1
+	JOIN PHONGBAN AS T2 ON T1.MaPhong=T2.MaPB
+GROUP BY MaPhong
+HAVING AVG(Luong)>30000
+--28.	Với mỗi phòng có mức lương trung bình lớn hơn 30.000, cho biết tên phòng và tổng số nhân viên là nam của phòng đó
+SELECT MaPhong,COUNT(MaNV) as 'Tong so nhan vien nam'
+FROM NHANVIEN AS T1
+	JOIN PHONGBAN AS T2 ON T1.MaPhong=T2.MaPB
+WHERE T1.GTinh IN ('m','M')
+GROUP BY MaPhong
+HAVING AVG(Luong)>30000
