@@ -1,34 +1,7 @@
-﻿/*1.	Tìm ngày sinh và địa chỉ của nhân viên có tên là “Nguyen Bao Hung”.
---2.	Tìm tên và địa chỉ của các nhân viên làm việc trong phòng “Nghien cuu”.
---3.	Với mỗi dự án được triển khai tại “Go Vap”, cho biết mã dự án, mã phòng quản lý và tên, địa chỉ, ngày sinh của người trưởng phòng.
---4.	Với mỗi nhân viên, cho biết họ, tên của nhân viên và họ, tên của người giám sát nhân viên đó.
---5.	Cho biết thông tin của tất cả các nhân viên.
-6.	Cho biết các mức lương riêng biệt của các nhân viên.
-7.	Liệt kê tất cả các nhân viên có địa chỉ thuộc quận “Phu Nhuan”.
-8.	Tìm tất cả các nhân viên sinh vào thập niên 1950.
-9.	Cho biết kết quả lương mới của các nhân viên tham gia dự án “San pham X” neu nhu họ được tăng thêm 10% lương.
-10.	Cho biết các nhân viên của phòng số 5 có mức lương từ 30.000 đến 50.000.
-11.	Cho biết danh sách các nhân viên và các dự án mà họ tham gia, sắp xếp tăng dần theo mã phòng, trong mỗi phòng sắp xếp theo họ và tên với thứ tự alphabe.
-12.	Cho biết họ tên các nhân viên không có người giám sát.
-13.	Cho biết họ tên của nhân viên có thân nhân cùng tên và cùng giới tính với nhân viên đó.
-14.	Cho biết họ tên các nhân viên tham gia tất cả các dự án do phòng số 5 quản lý.
-15.	Cho biết họ tên các nhân viên không có thân nhân.
-16.	Cho biết họ tên các trưởng phòng có ít nhất một thân nhân.
-17.	Cho biết mã số các nhân viên tham gia vào dự án số 1, số 2 hoặc số 3.
-18.	Tính tổng lương của tất cả các nhân viên, mức lương cao nhất, mức lương thấp nhất và mức lương trung bình.
-19.	Tính tổng lương của các nhân viên phòng “Nghien cuu”, mức lương cao nhất, mức lương thấp nhất và mức lương trung bình của phòng này.
-20.	Cho biết tổng số nhân viên của phòng “Nghien cuu”.
-21.	Có bao nhiêu mức lương riêng biệt trong cơ sở dữ liệu.
-22.	Với mỗi phòng, cho biết mã số phòng, tổng số nhân viên và mức lương trung bình của phòng.
-23.	Với mỗi dự án, cho biết mã số dự án, tên dự án và tổng số nhân viên tham gia dự án đó.
- 
-24.	Với mỗi dự án có nhiều hơn hai nhân viên tham gia, cho biết mã số, tên và tổng số nhân viên của dự án đó.
-25.	Với mỗi dự án, cho biết mã số dự án, tên dự án và tổng số nhân viên của phòng số 5 tham gia vào dự án đó.
-26.	Với mỗi phòng có nhiều hơn năm nhân viên, cho biết mã số phòng và tổng số nhân viên có mức lương cao hơn 40.000 của phòng đó.
-27.	Với mỗi phòng có mức lương trung bình lớn hơn 30.000, cho biết tên phòng và tổng số nhân viên của phòng đó.
-28.	Với mỗi phòng có mức lương trung bình lớn hơn 30.000, cho biết tên phòng và tổng số nhân viên là nam của phòng đó
-*/
+﻿
 --1.	Tìm ngày sinh và địa chỉ của nhân viên có tên là “Nguyen Bao Hung”.
+USE DB_COMPANY
+
 SELECT NgSinh,Diachi
 FROM NHANVIEN
 WHERE Ho like 'Nguyen' AND Dem like 'Bao' AND Ten like 'Hung'
@@ -55,6 +28,54 @@ FROM NHANVIEN
 SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen,Luong
 FROM NHANVIEN
 --7.	Liệt kê tất cả các nhân viên có địa chỉ thuộc quận “Phu Nhuan”.
-SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen
+SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen,Diachi
 FROM NHANVIEN
 WHERE Diachi LIKE '%Phu Nhuan%'
+--8.	Tìm tất cả các nhân viên sinh vào thập niên 1950.
+SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) as HoTen,NgSinh
+FROM NHANVIEN
+WHERE YEAR(NgSinh) BETWEEN 1950 AND 1960
+--9.	Cho biết kết quả lương mới của các nhân viên tham gia dự án “San pham X” neu nhu họ được tăng thêm 10% lương.
+
+SELECT T1.MaNV, Luong*1.1 as 'Luong moi'
+FROM THAMGIA AS T1 
+	JOIN DUAN AS T2 ON T1.MaDA =T2.MaDA
+	JOIN NHANVIEN AS T3 ON T1.MaNV = T3.MaNV
+WHERE T2.TenDA LIKE 'San pham X'
+--10.Cho biết các nhân viên của phòng số 5 có mức lương từ 30.000 đến 50.000.
+SELECT MaNV, CONCAT(Ho,' ',Dem,' ',Ten) AS 'Ho ten'
+FROM NHANVIEN T1 
+	JOIN PHONGBAN T2 ON T1.MaPhong = T2.MaPB
+WHERE T2.MaPB=5 AND T1.Luong BETWEEN 30000 AND 50000
+--11.	Cho biết danh sách các nhân viên và các dự án mà họ tham gia, sắp xếp tăng dần theo mã phòng, trong mỗi phòng sắp xếp theo họ và tên với thứ tự alphabe.
+SELECT T1.MaNV,T3.Ho,T3.Ten,MaPhong
+FROM THAMGIA AS T1 
+	JOIN DUAN AS T2 ON T1.MaDA =T2.MaDA
+	JOIN NHANVIEN AS T3 ON T1.MaNV = T3.MaNV
+ORDER BY MaPhong,T3.Ho,T3.Ten
+--12.	Cho biết họ tên các nhân viên không có người giám sát.
+--UPDATE NHANVIEN SET MaGSat = NULL WHERE MaNV='888665555'
+SELECT *
+FROM NHANVIEN
+WHERE MaGSat IS NULL
+--13.	Cho biết họ tên của nhân viên có thân nhân cùng tên và cùng giới tính với nhân viên đó.
+SELECT Ten,GTinh
+FROM NHANVIEN
+INTERSECT
+SELECT TenTN,GTinh
+FROM THANNHAN
+--14.	Cho biết họ tên các nhân viên tham gia tất cả các dự án do phòng số 5 quản lý.
+
+SELECT COUNT(*)
+FROM DUAN
+WHERE PhQuanly=5
+
+SELECT MaNV,COUNT(T1.MaDA)
+FROM THAMGIA T1 
+	JOIN DUAN T2 ON T1.MaDA = T2.MaDA
+WHERE T2.PhQuanly=5
+GROUP BY MaNV
+HAVING COUNT(T1.MaDA)=(SELECT COUNT(*)
+FROM DUAN
+WHERE PhQuanly=5) 
+--15.	Cho biết họ tên các nhân viên không có thân nhân.
