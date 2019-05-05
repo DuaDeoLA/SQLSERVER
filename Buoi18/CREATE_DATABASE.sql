@@ -2,9 +2,9 @@ USE master
 DROP DATABASE IF EXISTS [StrongHold]
 CREATE DATABASE [StrongHold] 
  ON  PRIMARY 
-( NAME = N'StrongHold', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER2016\MSSQL\DATA\StrongHold.mdf' , SIZE = 8192KB , MAXSIZE = 102400KB , FILEGROWTH = 2048KB )
+( NAME = N'StrongHold', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQL\DATA\StrongHold.mdf' , SIZE = 8192KB , MAXSIZE = 102400KB , FILEGROWTH = 2048KB )
  LOG ON 
-( NAME = N'StrongHold_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.MSSQLSERVER2016\MSSQL\DATA\StrongHold_log.ldf' , SIZE = 8192KB , MAXSIZE = 51200KB , FILEGROWTH = 1024KB )
+( NAME = N'StrongHold_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL13.SQLEXPRESS\MSSQL\DATA\StrongHold_log.ldf' , SIZE = 8192KB , MAXSIZE = 51200KB , FILEGROWTH = 1024KB )
 GO
 --
 USE [StrongHold]
@@ -46,8 +46,8 @@ DROP TABLE IF EXISTS [OrderDetails]
 CREATE TABLE [OrderDetails]
 (
 	
-	OrderNo	Ordertype,
-	SrNo	Bigint,
+	OrderNo	Ordertype ,
+	SrNo	Bigint IDENTITY,
 	Icode	Char(15),
 	Qty	Int,
 	CONSTRAINT PK_SrNo PRIMARY KEY (SrNo),
@@ -59,6 +59,7 @@ GO
 ALTER TABLE ITEM
 ADD CONSTRAINT CHECK_ICODE CHECK(SUBSTRING(Icode,1,1) = 'S' OR SUBSTRING(Icode,1,1) = 'R')
 
+SET IDENTITY_INSERT [OrderDetails] OFF;
 GO
 INSERT [dbo].[Customer] ([Ccode], [CName], [Caddress], [Cphone]) VALUES (N'GHL', N'Great Holidays Ltd.                               ', N'1, Lydia''s Avenue, Durham-41', N'115-72-43      ')
 INSERT [dbo].[Customer] ([Ccode], [CName], [Caddress], [Cphone]) VALUES (N'TLT', N'Travelite Ltd.                                    ', N'22, Rodeo Drive, Manhattan-11', N'null           ')
@@ -67,13 +68,13 @@ INSERT [dbo].[Item] ([ICode], [Iname], [Rate]) VALUES (N'RKSK-B         ', N'Ruc
 INSERT [dbo].[Item] ([ICode], [Iname], [Rate]) VALUES (N'RKSK-T         ', N'Rucksacks-Tan                                     ', CAST(500.00 AS Numeric(10, 2)))
 INSERT [dbo].[Item] ([ICode], [Iname], [Rate]) VALUES (N'STCS-24-S-DB   ', N'Suitcase 24'''', Soft, Dark Brown                   ', CAST(1575.00 AS Numeric(10, 2)))
 INSERT [dbo].[Item] ([ICode], [Iname], [Rate]) VALUES (N'STCS-28-S-B    ', N'Suitcase 28'''', Soft, Blue                         ', CAST(1790.00 AS Numeric(10, 2)))
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0083/98   ', 1, N'RKSK-T         ', 100)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0083/98   ', 2, N'STCS-24-S-DB   ', 100)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0256/99   ', 3, N'STCS-24-S-DB   ', 50)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0703/99   ', 4, N'RKSK-T         ', 70)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0703/99   ', 5, N'STCS-24-S-DB   ', 30)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0704/99   ', 6, N'RKSK-T         ', 20)
-INSERT [dbo].[OrderDetails] ([OrderNo], [SrNo], [Icode], [Qty]) VALUES (N'0856/99   ', 7, N'RKSK-T         ', 120)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0083/98   ', N'RKSK-T         ', 100)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0083/98   ', N'STCS-24-S-DB   ', 100)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0256/99   ', N'STCS-24-S-DB   ', 50)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0703/99   ', N'RKSK-T         ', 70)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0703/99   ', N'STCS-24-S-DB   ', 30)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0704/99   ', N'RKSK-T         ', 20)
+INSERT [dbo].[OrderDetails] ([OrderNo], [Icode], [Qty]) VALUES (N'0856/99   ', N'RKSK-T         ', 120)
 INSERT [dbo].[OrderMaster] ([OrderNo], [OrderDate], [Ccode]) VALUES (N'0083/98   ', CAST(N'1998-12-30T00:00:00.000' AS DateTime), N'TLT')
 INSERT [dbo].[OrderMaster] ([OrderNo], [OrderDate], [Ccode]) VALUES (N'0256/99   ', CAST(N'1999-10-06T00:00:00.000' AS DateTime), N'ULS')
 INSERT [dbo].[OrderMaster] ([OrderNo], [OrderDate], [Ccode]) VALUES (N'0703/99   ', CAST(N'1999-10-15T00:00:00.000' AS DateTime), N'TLT')

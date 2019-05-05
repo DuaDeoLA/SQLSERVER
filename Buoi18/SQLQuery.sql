@@ -20,17 +20,17 @@ SELECT * FROM Order_info
 --c.Write a stored procedure named Process_counter that displays the 
 --square values of numbers starting from 5, in descending order. When the number reaches a value 2, an error should be raised, and no more square values should be displayed.
 GO
-ALTER PROCEDURE Process_counter
+CREATE PROCEDURE Process_counter
 AS
 BEGIN
-	DECLARE @DEM INT =6;
-	WHILE @DEM>3 
+	DECLARE @DEM INT =5;
+	WHILE @DEM>2 
 		BEGIN
-			SELECT	@DEM = @DEM-1
 			PRINT  @DEM *@DEM
-		END
+			SELECT	@DEM = @DEM-1
+					END
 
-	PRINT 'ERROERR'
+	PRINT 'ERRO'
 END
 
 EXEC Process_counter
