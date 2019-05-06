@@ -34,3 +34,24 @@ BEGIN
 END
 
 EXEC Process_counter
+--d.	Write a stored procedure named Dis_amount that 
+--accepts Customer code, Order No as parameters and display item code, item name, amount of money customer have to pay for each item.
+GO
+SELECT	T3.ICode,T3.Iname,(T3.Rate * T1.Qty) AS 'Amount'
+FROM [OrderDetails] AS T1
+	JOIN [OrderMaster] AS T2 ON T1.OrderNo=T2.OrderNo
+	JOIN [Item] AS T3 ON T1.Icode = T3.ICode
+WHERE T2.OrderNo='0256/99' AND T2.Ccode ='ULS'
+
+ALTER PROCEDURE Dis_amount 
+@OrderNo char(10),@Ccode char(3)
+AS
+BEGIN
+			SELECT	T3.ICode,T3.Iname,(T3.Rate * T1.Qty) AS 'Amount'
+			FROM [OrderDetails] AS T1
+				JOIN [OrderMaster] AS T2 ON T1.OrderNo=T2.OrderNo
+				JOIN [Item] AS T3 ON T1.Icode = T3.ICode
+			WHERE T2.OrderNo=@OrderNo AND T2.Ccode =@Ccode 
+END
+
+EXECUTE Dis_amount '0256/99','ULS'
