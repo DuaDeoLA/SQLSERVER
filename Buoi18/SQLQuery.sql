@@ -55,3 +55,70 @@ BEGIN
 END
 
 EXECUTE Dis_amount '0256/99','ULS'
+--Create an INSERT trigger on item table to ensure that the prices of new products are not greater than 5000.
+GO
+CREATE TRIGGER Insert_Item ON  [dbo].[Item]
+FOR INSERT
+AS
+	IF (SELECT Rate FROM inserted)>5000
+	BEGIN
+		PRINT 'Prices must less than 5000'
+		ROLLBACK TRANSACTION
+	END
+--CHECK
+INSERT INTO Item VALUES('RKSK-C','Rucksacks-Brown', 5100);
+GO
+--f.	Create an UPDATE trigger named CheckingUpdate on 
+--OrderDetails table that ensure that the existing quantity in the OrderDetails table is not modified to value less than 0.
+
+CREATE TRIGGER CheckingUpdate ON [dbo].[OrderDetails]
+FOR UPDATE
+AS
+IF (SELECT Qty from inserted) < 0
+	BEGIN
+		PRINT 'Value insert must greater than 0'
+		ROLLBACK TRANSACTION
+	END
+UPDATE [dbo].[OrderDetails] SET Qty= -1  WHERE [OrderNo]= N'0856/99' AND [SrNo]= 7 AND [Icode]='RKSK-T         ';
+--g.	Create DELETE trigger to ensure that when delete records in OrderMaster tables,
+-- the records in related table are also deleted.
+GO
+CREATE TRIGGER OrderMaster_DeleteTrigger ON [OrderMaster]
+FOR DELETE
+AS
+	BEGIN
+		DECLARE @OrderNo char(10) = ( SELECT OrderNo FROM deleted);
+		DELETE  FROM OrderDetails WHERE OrderNo=@OrderNo
+	END
+DELETE FROM [OrderMaster] WHERE [OrderNo]='0083/98' AND [Ccode]= 'TLT'
+GO
+--h.	Create DELETE trigger that will not allow more than 2 records to be deleted from the OrderMaster table. 
+CREATE TRIGGER OrderMaster_Deletenum ON [OrderMaster]
+FOR DELETE
+AS
+	IF ( SELECT COUNT(*) FROM deleted)>2
+	BEGIN
+		PRINT 'More than 2 record has been delete from table OrderMaster'
+		ROLLBACK TRANSACTION
+	END
+--i.	Create a table named item_backup which has the same structure with the item table. 
+--Create DELETE trigger on item table to ensure that when the records in the item table are deleted, they are inserted into item_backup.
+DROP TABLE IF EXISTS [item_backup]
+CREATE TABLE [item_backup]
+(
+	ICode	Char(15),
+	Iname	Char(50) NOT NULL,
+	Rate	numeric(10,2) NOT NULL DEFAULT(0),
+	CONSTRAINT PK_ICode_bk PRIMARY KEY (ICode),
+	CONSTRAINT CHECK_Rate_bk CHECK( Rate >0)
+)
+GO
+ALTER TRIGGER backup_item ON [Item]
+AFTER DELETE
+AS
+	BEGIN
+		INSERT INTO [item_backup]  SELECT * FROM deleted
+	END
+INSERT INTO Item VALUES('RKSK-D','Rucksacks-Brown', 400);
+DELETE FROM [Item] WHERE ICode = 'RKSK-D';
+SELECT * FROM [item_backup]
