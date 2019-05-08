@@ -1,0 +1,1 @@
+https://rdbms-ssdo-newfeature.blogspot.com/2013/07/e-thi-thuc-hanh-sql-va-ap-tham-khao.html?fbclid=IwAR1UpabR9Ab6FBAD7IEzP1dvlYBKZbmN27DXFD9JHurWyYA1gjOsuuPlBTs
