@@ -20,17 +20,18 @@ SELECT * FROM Order_info
 --c.Write a stored procedure named Process_counter that displays the 
 --square values of numbers starting from 5, in descending order. When the number reaches a value 2, an error should be raised, and no more square values should be displayed.
 GO
-CREATE PROCEDURE Process_counter
+ALTER PROCEDURE Process_counter
 AS
 BEGIN
 	DECLARE @DEM INT =5;
-	WHILE @DEM>2 
+	WHILE @DEM>0
 		BEGIN
+		IF (@DEM <>2)
 			PRINT  @DEM *@DEM
-			SELECT	@DEM = @DEM-1
-					END
-
-	PRINT 'ERRO'
+		ELSE
+			PRINT 'ERR'
+		SELECT	@DEM = @DEM-1
+		END
 END
 
 EXEC Process_counter
@@ -43,6 +44,7 @@ FROM [OrderDetails] AS T1
 	JOIN [Item] AS T3 ON T1.Icode = T3.ICode
 WHERE T2.OrderNo='0256/99' AND T2.Ccode ='ULS'
 
+GO
 ALTER PROCEDURE Dis_amount 
 @OrderNo char(10),@Ccode char(3)
 AS
@@ -83,15 +85,14 @@ UPDATE [dbo].[OrderDetails] SET Qty= -1  WHERE [OrderNo]= N'0856/99' AND [SrNo]=
 --g.	Create DELETE trigger to ensure that when delete records in OrderMaster tables,
 -- the records in related table are also deleted.
 GO
-CREATE TRIGGER OrderMaster_DeleteTrigger ON [OrderMaster]
-FOR DELETE
+ALTER TRIGGER OrderMaster_DeleteTrigger ON [OrderMaster]
+INSTEAD OF DELETE
 AS
 	BEGIN
-		DECLARE @OrderNo char(10) = ( SELECT OrderNo FROM deleted);
-		DELETE  FROM OrderDetails WHERE OrderNo=@OrderNo
+		DELETE  FROM OrderDetails WHERE OrderNo IN (SELECT OrderNo FROM deleted);
+		DELETE  FROM [OrderMaster] WHERE OrderNo IN (SELECT OrderNo FROM deleted)
 	END
-DELETE FROM [OrderMaster] WHERE [OrderNo]='0083/98' AND [Ccode]= 'TLT'
-GO
+DELETE FROM [OrderMaster] WHERE [OrderNo]='0083/98' 
 --h.	Create DELETE trigger that will not allow more than 2 records to be deleted from the OrderMaster table. 
 CREATE TRIGGER OrderMaster_Deletenum ON [OrderMaster]
 FOR DELETE
